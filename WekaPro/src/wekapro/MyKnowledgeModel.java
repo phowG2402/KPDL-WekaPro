@@ -18,6 +18,7 @@ import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.instance.RemovePercentage;
 import weka.filters.unsupervised.instance.Resample;
 
+
 /**
  *
  * @author Admin
@@ -36,12 +37,16 @@ public class MyKnowledgeModel {
     public MyKnowledgeModel(String filename,
                         String m_opts,
                         String d_opts) throws Exception {
+        if(!filename.isEmpty()){
         source = new DataSource(filename);
         dataset = source.getDataSet();
-        if(m_opts != null)
+        }
+        if(m_opts != null){
             model_options = weka.core.Utils.splitOptions(m_opts);
-        if(d_opts != null)
+        }
+        if(d_opts != null){
             data_options = weka.core.Utils.splitOptions(d_opts);
+        }
     }
     
     public Instances removeData(Instances originalData) throws Exception{
@@ -102,10 +107,26 @@ public class MyKnowledgeModel {
         return Filter.useFilter(originalSet, rs);
     }
     
+    public void saveModel(String filename, Object model) throws Exception{
+        weka.core.SerializationHelper.write(filename, model);
+    }
+    
+    public Object loadModel(String filename) throws Exception{
+        return weka.core.SerializationHelper.read(filename);
+    }    
+    
+    public void setTrainset(String filename) throws Exception {
+    DataSource trainSource = new DataSource(filename);
+    this.trainset = trainSource.getDataSet();
+    }
+    
+    public void setTestset(String filename) throws Exception{
+    DataSource testSource = new DataSource(filename);
+    this.testset = testSource.getDataSet();
+    }
+    
     @Override
     public String toString() {
         return dataset.toSummaryString();
     }
-    
-    
 }
